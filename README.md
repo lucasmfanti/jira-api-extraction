@@ -1,2 +1,8 @@
 # jira-api-extraction
 This is a repo containing code for extracting data incrementally relative to issues from Jira API. The code is orchestrated in an Airflow DAG and feeds a raw table on an engine like BigQuery. Then a staging model for dbt selects the most recent data for each issue.
+# What is Jira?
+Jira is a powerful project management and issue tracking software developed by Atlassian. It is widely utilized by teams and organizations across various industries to streamline and manage their projects, tasks, and workflows efficiently. Jira offers a comprehensive suite of tools for creating and prioritizing tasks, assigning them to team members, tracking progress, and collaborating on projects. Its flexibility allows it to adapt to a wide range of use cases, from software development and IT support to marketing and business operations.
+# The DAG
+This [DAG](jira_issues.py) is written for Airflow with a daily schedule. It always looks for data on issues that have been updated during the day before. The csv generated is then uploaded to Google Cloud Storage, with a name containing the date of the extraction. A live table is created on Google BigQuery then with all the csv files from the bucket.
+# The dbt Model
+This [model](staging_jira_issues.sql) is a SQL code where dbt will run to update the raw table to a better suited for any other downstream calculations and dashboards feeding processes. It handles the problem to have only the most recent version of your data for each issue, guaranteeing that your id column will be a primary key for the table and a unique identifier.
